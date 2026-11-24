@@ -3,6 +3,13 @@
 주제를 사진으로 찍으면 Claude가 IELTS Part 1/2/3 질문을 만들어 줍니다.
 질문은 G2 안경 화면에 뜨고, 실제 시험 시간에 맞춘 타이머가 같이 돌아갑니다.
 
+## 바로 쓰기 (설치 없음)
+Even Realities 앱에서 아래 QR을 스캔하세요.
+
+<img src="docs/qr.png" width="220" alt="QR code">
+
+주소: https://zeroh0512-netizen.github.io/ielts-g2/
+
 ## 흐름
 1. 휴대폰 Even 앱 안에서 **Take photo**로 주제(큐카드, 교재 페이지, 메모 등)를 찍습니다. 주제를 직접 입력해도 됩니다.
 2. **Generate questions**를 누르면 Claude(`claude-opus-5-5`)가 사진을 읽고 질문 세트를 만듭니다.
@@ -39,7 +46,7 @@ Part 2가 1:40보다 짧거나 Part 1 답변이 너무 길면 표시해 줍니�
 
 발음은 텍스트로 판단할 수 없어서 점수에서 빠집니다.
 
-## 실행
+## 직접 실행 (개발용)
 
 압축을 푼 폴더에서 아래 명령을 실행합니다. Node.js 18 이상이 필요합니다.
 
