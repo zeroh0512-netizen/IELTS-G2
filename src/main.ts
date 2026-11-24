@@ -16,6 +16,7 @@ let startedAt = 0
 let ticker: number | undefined
 let recorder: PcmRecorder | null = null
 let stt: SonioxStream | null = null
+let micBytes = 0
 let answers: Answer[] = []
 let photo: { base64: string; mimeType: string } | null = null
 
@@ -102,12 +103,17 @@ async function next() {
   $('stepInfo').textContent = `Part ${step.part} - ${step.label}`
   $('stepText').textContent = step.text
   $('liveText').textContent = ''
+  $('sttStatus').textContent = ''
+  micBytes = 0
   if (step.record && glasses.bridge) {
     recorder = new PcmRecorder()
     const key = $<HTMLInputElement>('sonioxKey').value.trim()
     if (key) {
       stt = new SonioxStream(key, step.text)
       stt.onText = (t) => { $('liveText').textContent = t }
+      stt.onStatus = (st) => { $('sttStatus').textContent = `Mic ${(micBytes / 32000).toFixed(1)}s - ${st}` }
+    } else {
+      $('sttStatus').textContent = 'No Soniox key in Settings: live captions are off.'
     }
     await glasses.mic(true)
   }
@@ -286,7 +292,11 @@ function setBusy(on: boolean, msg = '') {
 async function init() {
   showView('home')
   glasses.onInput = onInput
-  glasses.onAudio = (pcm) => { recorder?.push(pcm); stt?.push(pcm) }
+  glasses.onAudio = (pcm) => {
+    micBytes += pcm.byteLength
+    recorder?.push(pcm); stt?.push(pcm)
+    if (!stt && recorder) $('sttStatus').textContent = `Mic ${(micBytes / 32000).toFixed(1)}s`
+  }
   glasses.onPreview = (h, b) => { $('hudHeader').textContent = h; $('hudBody').textContent = b }
 
   const connected = await glasses.connect()

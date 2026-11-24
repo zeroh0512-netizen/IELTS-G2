@@ -71,6 +71,29 @@ npm run qr
 - 처음 실행할 때 **Anthropic API key** 칸에 키를 넣어 주세요. 키는 이 기기에만 저장됩니다.
 - 안경 없이 PC 브라우저로 열면 "Browser preview" 모드가 됩니다. 위쪽 초록 화면이 안경 화면 미리보기이고, Space는 탭, Esc는 더블탭입니다.
 
+## 베타로 배포 (Even Hub)
+GitHub에 올릴 때마다 Actions가 `ielts-speak.ehpk`를 만들어 둡니다. Actions 실행 화면 아래 **Artifacts**에서 받을 수 있어요. 직접 만들려면 `npm run pack`을 실행합니다.
+
+```bash
+npx evenhub login
+```
+
+```bash
+npx evenhub create ielts-speak.ehpk --icon icon.png
+```
+
+```bash
+npx evenhub promote 0.4.0 --to beta
+```
+
+두 번째 버전부터는 `create` 대신 `upload`를 씁니다.
+
+```bash
+npx evenhub upload ielts-speak.ehpk -m "변경 내용"
+```
+
+패키지로 설치한 앱은 GitHub Pages가 아니라 패키지 안의 파일로 실행됩니다. 그래서 고친 내용을 반영하려면 `app.json`의 `version`을 올리고 다시 업로드해야 해요.
+
 ## 패키징
 
 ```bash

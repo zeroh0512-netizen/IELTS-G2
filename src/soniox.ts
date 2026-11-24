@@ -17,13 +17,24 @@ export class SonioxStream {
   private resolveDone!: (t: string) => void
   private flushTimer: number | undefined
   error: string | null = null
+  sentBytes = 0
+  updates = 0
   onText: (text: string) => void = () => {}
+  onStatus: (status: string) => void = () => {}
+
+  private status(extra?: string) {
+    const state = this.error ? `error: ${this.error}`
+      : ['connecting', 'connected', 'closing', 'closed'][this.ws.readyState]
+    this.onStatus(`Soniox ${state} - sent ${(this.sentBytes / 32000).toFixed(1)}s audio - ${this.updates} updates${extra ? ' - ' + extra : ''}`)
+  }
 
   constructor(apiKey: string, question: string) {
     this.done = new Promise((r) => { this.resolveDone = r })
     this.ws = new WebSocket(WS_URL, ['soniox-api-key', apiKey])
     this.ws.binaryType = 'arraybuffer'
+    this.status()
     this.ws.onopen = () => {
+      this.status()
       this.ws.send(JSON.stringify({
         model: 'stt-rt-v6',
         audio_format: 'pcm_s16le',
@@ -39,7 +50,11 @@ export class SonioxStream {
     this.ws.onmessage = (e) => {
       if (typeof e.data !== 'string') return
       const msg = JSON.parse(e.data) as { tokens?: Token[]; finished?: boolean; error_code?: number; error_message?: string }
-      if (msg.error_message || msg.error_code) { this.error = msg.error_message || `Soniox error ${msg.error_code}`; this.close(); return }
+      if (msg.error_message || msg.error_code) {
+        this.error = `${msg.error_code ?? ''} ${msg.error_message ?? ''}`.trim()
+        this.status(); this.close(); return
+      }
+      this.updates++
       let partial = ''
       for (const t of msg.tokens || []) {
         if (t.text === '<end>' || t.text === '<fin>') continue
@@ -48,10 +63,14 @@ export class SonioxStream {
       }
       this.partial = partial
       this.onText(this.text)
+      this.status()
       if (msg.finished) this.close()
     }
-    this.ws.onerror = () => { this.error ??= 'Could not connect to Soniox (check the API key).' }
-    this.ws.onclose = () => this.close()
+    this.ws.onerror = () => { this.error ??= 'connection failed (check the API key / network)'; this.status() }
+    this.ws.onclose = (e) => {
+      if (!this.error && e.code !== 1000 && e.code !== 1005) this.error = `closed ${e.code}${e.reason ? ' ' + e.reason : ''}`
+      this.status(); this.close()
+    }
   }
 
   get text() { return (this.finalText + this.partial).replace(/\s+/g, ' ').trim() }
@@ -68,6 +87,8 @@ export class SonioxStream {
     for (const c of this.pending) { buf.set(c, o); o += c.byteLength }
     this.pending = []; this.pendingBytes = 0
     this.ws.send(buf)
+    this.sentBytes += buf.byteLength
+    this.status()
   }
 
   /** Stop sending audio and wait (max ~8 s) for the final transcript. */

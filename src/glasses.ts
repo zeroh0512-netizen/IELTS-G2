@@ -48,7 +48,16 @@ export class Glasses {
   }
 
   private handle(e: EvenHubEvent) {
-    if (e.audioEvent?.audioPcm) { this.onAudio(e.audioEvent.audioPcm); return }
+    if (e.audioEvent?.audioPcm) {
+      const raw = e.audioEvent.audioPcm as unknown
+      // Normally a Uint8Array; tolerate a plain number array or base64 string from the host.
+      const pcm = raw instanceof Uint8Array ? raw
+        : Array.isArray(raw) ? Uint8Array.from(raw as number[])
+        : typeof raw === 'string' ? Uint8Array.from(atob(raw), (c) => c.charCodeAt(0))
+        : null
+      if (pcm?.byteLength) this.onAudio(pcm)
+      return
+    }
     const src = e.textEvent ?? e.listEvent ?? e.sysEvent
     if (!src) return
     const t = OsEventTypeList.fromJson((src as { eventType?: unknown }).eventType)
