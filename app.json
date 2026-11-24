@@ -1,0 +1,38 @@
+{
+  "package_id": "com.ielts.speakcoach",
+  "edition": "202601",
+  "name": "IELTS Speak",
+  "version": "0.3.0",
+  "min_app_version": "2.2.10",
+  "min_sdk_version": "0.0.16",
+  "tagline": "IELTS speaking practice with timers on your glasses",
+  "description": "Photograph an IELTS speaking topic, get Part 1/2/3 questions on your G2 display, and answer against real exam timers.",
+  "author": "IELTS Speak",
+  "entrypoint": "index.html",
+  "permissions": [
+    {
+      "name": "network",
+      "desc": "Sends topic photos and transcripts to the Claude API, and streams your recorded answers to Soniox for live transcription.",
+      "whitelist": [
+        "https://api.anthropic.com",
+        "wss://stt-rt.soniox.com"
+      ]
+    },
+    {
+      "name": "camera",
+      "desc": "Takes a photo of the speaking topic or cue card."
+    },
+    {
+      "name": "album",
+      "desc": "Picks an existing photo of a speaking topic."
+    },
+    {
+      "name": "g2-microphone",
+      "desc": "Records your spoken answers so you can play them back."
+    }
+  ],
+  "supported_languages": [
+    "en",
+    "ko"
+  ]
+}

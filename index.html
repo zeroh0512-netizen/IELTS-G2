@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>IELTS Speak</title>
+</head>
+<body>
+  <header class="top">
+    <h1>IELTS Speak</h1>
+    <span id="conn" class="pill">Connecting...</span>
+  </header>
+
+  <!-- Mirror of what the glasses show -->
+  <section class="hud" aria-label="Glasses preview">
+    <div id="hudHeader"></div>
+    <pre id="hudBody"></pre>
+  </section>
+
+  <main data-view="home">
+    <section class="card">
+      <h2>1. Topic</h2>
+      <div class="row">
+        <button id="camera" class="primary">Take photo</button>
+        <button id="album">Album</button>
+        <button id="pasteBtn">Paste</button>
+      </div>
+      <input id="fileCam" type="file" accept="image/*" capture="environment" hidden />
+      <input id="fileAlbum" type="file" accept="image/*" hidden />
+      <img id="preview" alt="Topic photo" hidden />
+      <textarea id="topicText" rows="2" placeholder="Type or paste a topic, questions, or an image (optional), e.g. 'hometown'"></textarea>
+      <details>
+        <summary>Settings (API keys)</summary>
+        <label class="muted small">Anthropic API key: questions and feedback</label>
+        <input id="apiKey" type="password" autocomplete="off" placeholder="sk-ant-..." />
+        <label class="muted small">Soniox API key: transcribes your answers live while you speak</label>
+        <input id="sonioxKey" type="password" autocomplete="off" placeholder="Soniox key" />
+        <p class="muted small">Stored only on this device.</p>
+      </details>
+      <button id="generate" class="primary wide">Generate questions</button>
+      <p id="status" class="muted"></p>
+    </section>
+
+    <section id="questionsCard" class="card" hidden>
+      <h2>2. Practice: <span id="qTopic"></span></h2>
+      <div class="parts">
+        <label><input type="radio" name="part" value="full" checked /> Full test</label>
+        <label><input type="radio" name="part" value="p1" /> Part 1</label>
+        <label><input type="radio" name="part" value="p2" /> Part 2</label>
+        <label><input type="radio" name="part" value="p3" /> Part 3</label>
+      </div>
+      <button id="start" class="primary wide">Start (or tap on glasses)</button>
+      <details><summary>Show questions</summary><div id="qList"></div></details>
+    </section>
+  </main>
+
+  <main data-view="practice" hidden>
+    <section class="card center">
+      <p id="stepInfo" class="muted"></p>
+      <div id="timer">0:00</div>
+      <pre id="stepText"></pre>
+      <p id="liveText" class="live"></p>
+      <div class="row">
+        <button id="nextBtn" class="primary">Next (tap)</button>
+        <button id="endBtn">End (double-tap)</button>
+      </div>
+    </section>
+  </main>
+
+  <main data-view="review" hidden>
+    <section class="card">
+      <h2>Review</h2>
+      <ol id="reviewList"></ol>
+      <button id="copyBtn" class="wide">Copy for Claude app</button>
+      <button id="feedbackBtn" class="primary wide">Get feedback</button>
+      <p id="reviewStatus" class="muted"></p>
+      <div id="exportBox" hidden><textarea id="exportText" rows="8" readonly></textarea></div>
+      <div id="feedbackOut"></div>
+      <button id="againBtn" class="wide">New session</button>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
