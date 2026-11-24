@@ -8,7 +8,7 @@ Even Realities 앱에서 아래 QR을 스캔하세요.
 
 <img src="docs/qr.png" width="220" alt="QR code">
 
-주소: https://zeroh0512-netizen.github.io/ielts-g2/
+주소: https://zeroh0512-netizen.github.io/IELTS-G2/
 
 ## 흐름
 1. 휴대폰 Even 앱 안에서 **Take photo**로 주제(큐카드, 교재 페이지, 메모 등)를 찍습니다. 주제를 직접 입력해도 됩니다.
